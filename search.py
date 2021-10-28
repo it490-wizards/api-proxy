@@ -3,7 +3,10 @@
 import os
 import sys
 
+import dotenv
 import requests
+
+dotenv.load_dotenv()
 
 IMDB_API_KEY = os.getenv("IMDB_API_KEY")
 
