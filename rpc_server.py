@@ -13,7 +13,7 @@ def on_request(ch, method, props, body: bytes):
     ts = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
     print(f"[{ts}] {s}")
 
-    response = json.dumps(search.searchMovie(s))
+    response = json.dumps(search.search_movie(s))
 
     ch.basic_publish(
         exchange="",

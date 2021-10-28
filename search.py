@@ -8,7 +8,7 @@ dotenv.load_dotenv()
 IMDB_API_KEY = os.getenv("IMDB_API_KEY")
 
 
-def searchMovie(query: str) -> list:
+def search_movie(query: str) -> list:
     response = requests.get(
         f"https://imdb-api.com/en/API/SearchMovie/{IMDB_API_KEY}/{query}"
     )
@@ -19,7 +19,7 @@ def searchMovie(query: str) -> list:
         return []
 
 
-def getTitle(imdb_id: str) -> dict:
+def title(imdb_id: str) -> dict:
     # which data to extract from API result
     keyFilter = [
         "id",
