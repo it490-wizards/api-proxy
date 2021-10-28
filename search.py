@@ -12,9 +12,11 @@ def searchMovie(query: str) -> list:
     response = requests.get(
         f"https://imdb-api.com/en/API/SearchMovie/{IMDB_API_KEY}/{query}"
     )
-    result = response.json()
-
-    return result["results"]
+    if response:
+        result = response.json()
+        return result.get("results") or []
+    else:
+        return []
 
 
 def getTitle(imdb_id: str) -> dict:
@@ -32,6 +34,8 @@ def getTitle(imdb_id: str) -> dict:
     response = requests.get(
         f"https://imdb-api.com/en/API/Title/{IMDB_API_KEY}/{imdb_id}"
     )
-    result = response.json()
-
-    return {key: result[key] for key in keyFilter}
+    if response:
+        result = response.json()
+        return {key: result[key] for key in keyFilter}
+    else:
+        return {}
