@@ -1,7 +1,4 @@
-#!/bin/python3
-
 import os
-import sys
 
 import dotenv
 import requests
@@ -38,13 +35,3 @@ def getTitle(imdb_id: str) -> dict:
     result = response.json()
 
     return {key: result[key] for key in keyFilter}
-
-
-if __name__ == "__main__":
-    if IMDB_API_KEY is None:
-        print("'IMDB_API_KEY' not set", file=sys.stderr)
-        exit(1)
-
-    # TODO: temporary
-    titles = searchMovie(sys.argv[1])
-    print(getTitle(titles[0]["id"]))

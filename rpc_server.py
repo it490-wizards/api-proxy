@@ -1,8 +1,11 @@
 #!/usr/bin/env python
 
+import json
 import time
 
 import pika
+
+import search
 
 
 def on_request(ch, method, props, body: bytes):
@@ -10,7 +13,7 @@ def on_request(ch, method, props, body: bytes):
     ts = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
     print(f"[{ts}] {s}")
 
-    response = s.upper()
+    response = json.dumps(search.searchMovie(s))
 
     ch.basic_publish(
         exchange="",
