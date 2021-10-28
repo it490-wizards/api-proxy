@@ -4,26 +4,29 @@ import json
 import time
 
 import pika
+from pika.spec import Basic, BasicProperties, Channel
 
 import search
 
 
-def on_request(ch, method, props, body: bytes):
-    s = body.decode()
-    ts = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
-    print(f"[{ts}] {s}")
+def on_request(
+    channel: Channel, method: Basic.Deliver, properties: BasicProperties, body: bytes
+):
+    request = body.decode()
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
+    print(f"[{timestamp}] {request}")
 
-    response = json.dumps(search.search_movie(s))
+    response = json.dumps(search.search_movie(request))
 
-    ch.basic_publish(
+    channel.basic_publish(
         exchange="",
-        routing_key=props.reply_to,
+        routing_key=properties.reply_to,
         properties=pika.BasicProperties(
-            correlation_id=props.correlation_id,
+            correlation_id=properties.correlation_id,
         ),
         body=str(response),
     )
-    ch.basic_ack(delivery_tag=method.delivery_tag)
+    channel.basic_ack(delivery_tag=method.delivery_tag)
 
 
 if __name__ == "__main__":
