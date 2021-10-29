@@ -1,5 +1,6 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
+import json
 import sys
 import uuid
 
@@ -28,7 +29,7 @@ class MovieInfoRpcClient:
         if self.corr_id == props.correlation_id:
             self.response = body.decode()
 
-    def call(self, s: str) -> str:
+    def call(self, request: str) -> str:
         self.response = None
         self.corr_id = str(uuid.uuid4())
         self.channel.basic_publish(
@@ -38,14 +39,39 @@ class MovieInfoRpcClient:
                 reply_to=self.callback_queue,
                 correlation_id=self.corr_id,
             ),
-            body=s.encode(),
+            body=request.encode(),
         )
         while self.response is None:
             self.connection.process_data_events()
         return self.response
 
+    def search_movie(self, query: str) -> list:
+        response = self.call(
+            json.dumps(
+                {
+                    "func": "search_movie",
+                    "params": [query],
+                }
+            )
+        )
+        return json.loads(response)
+
+    def title(self, imdb_id: str) -> dict:
+        response = self.call(
+            json.dumps(
+                {
+                    "func": "title",
+                    "params": [imdb_id],
+                }
+            )
+        )
+        return json.loads(response)
+
+
+def main():
+    client = MovieInfoRpcClient()
+    print(client.search_movie(sys.argv[1]))
+
 
 if __name__ == "__main__":
-    movieinfo_rpc = MovieInfoRpcClient()
-    response = movieinfo_rpc.call(sys.argv[1])
-    print(response)
+    main()
