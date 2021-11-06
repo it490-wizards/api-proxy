@@ -50,7 +50,7 @@ class MovieInfoRpcClient:
             json.dumps(
                 {
                     "func": "search_movie",
-                    "params": [query],
+                    "args": [query],
                 }
             )
         )
@@ -61,7 +61,7 @@ class MovieInfoRpcClient:
             json.dumps(
                 {
                     "func": "title",
-                    "params": [imdb_id],
+                    "args": [imdb_id],
                 }
             )
         )

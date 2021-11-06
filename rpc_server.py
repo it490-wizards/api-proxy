@@ -17,11 +17,11 @@ def on_request(ch, method, properties, body: bytes):
     # unpack the function and parameters from request
     request_obj = json.loads(request)
     func = request_obj.get("func")
-    params = request_obj.get("params")
+    args = request_obj.get("args")
     if func == "search_movie":
-        response = search.search_movie(*params)
+        response = search.search_movie(*args)
     elif func == "title":
-        response = search.title(*params)
+        response = search.title(*args)
     else:
         response = None
 
