@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+import os
 import time
 
 import pika
@@ -37,7 +38,17 @@ def on_request(ch, method, properties, body: bytes):
 
 
 def main():
-    connection = pika.BlockingConnection()
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(
+            host=os.getenv("PIKA_HOST"),
+            port=int(os.getenv("PIKA_PORT")),
+            virtual_host=os.getenv("PIKA_VHOST"),
+            credentials=pika.PlainCredentials(
+                username=os.getenv("PIKA_USER"),
+                password=os.getenv("PIKA_PASSWORD"),
+            ),
+        )
+    )
 
     channel = connection.channel()
     channel.queue_declare(queue="rpc_queue")
@@ -50,4 +61,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        pass
