@@ -29,7 +29,8 @@ class MovieInfoRpcClient:
         if self.corr_id == props.correlation_id:
             self.response = body.decode()
 
-    def call(self, request: str) -> str:
+    def call(self, func: str, *args) -> str:
+        request = json.dumps({"func": func, "args": args})
         self.response = None
         self.corr_id = str(uuid.uuid4())
         self.channel.basic_publish(
@@ -43,34 +44,13 @@ class MovieInfoRpcClient:
         )
         while self.response is None:
             self.connection.process_data_events()
-        return self.response
 
-    def search_movie(self, query: str) -> list:
-        response = self.call(
-            json.dumps(
-                {
-                    "func": "search_movie",
-                    "args": [query],
-                }
-            )
-        )
-        return json.loads(response)
-
-    def title(self, imdb_id: str) -> dict:
-        response = self.call(
-            json.dumps(
-                {
-                    "func": "title",
-                    "args": [imdb_id],
-                }
-            )
-        )
-        return json.loads(response)
+        return json.loads(self.response)
 
 
 def main():
     client = MovieInfoRpcClient()
-    print(client.search_movie(sys.argv[1]))
+    print(client.call("search_movie", sys.argv[1]))
 
 
 if __name__ == "__main__":
