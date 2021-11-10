@@ -28,7 +28,8 @@ def title(imdb_id: str) -> dict:
         "releaseDate",
         "runtimeMins",
         "image",
-        "genreList",
+        "languages",
+        "genres",
     ]
 
     response = requests.get(
@@ -39,3 +40,10 @@ def title(imdb_id: str) -> dict:
         return {key: result[key] for key in keyFilter}
     else:
         return {}
+
+
+def get_top10() -> list:
+    response = requests.get(f"https://imdb-api.com/en/API/Top250Movies/{IMDB_API_KEY}")
+    result = response.json()
+
+    return [title(item["id"]) for item in result["items"][:10]]

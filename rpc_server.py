@@ -19,10 +19,13 @@ def on_request(ch, method, properties, body: bytes):
     request_obj = json.loads(request)
     func = request_obj.get("func")
     args = request_obj.get("args")
+
     if func == "search_movie":
         response = search.search_movie(*args)
     elif func == "title":
         response = search.title(*args)
+    elif func == "get_top10":
+        response = search.get_top10(*args)
     else:
         response = None
 
