@@ -30,6 +30,7 @@ def title(imdb_id: str) -> dict:
         "image",
         "languages",
         "genres",
+        "plot",
     ]
 
     response = requests.get(
